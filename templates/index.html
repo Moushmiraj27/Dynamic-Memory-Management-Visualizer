@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dynamic Memory Management Visualizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <!-- Hero / Home Section -->
+    <div class="hero" id="hero-section">
+        <div class="hero-content">
+            <h1>MemoryViz</h1>
+            <p>Visualize Dynamic Memory Management with FIFO & LRU algorithms</p>
+            <button class="btn primary" id="start-btn">Start Simulation</button>
+        </div>
+    </div>
+
+    <!-- Main App Shell -->
+    <div class="app-shell" id="app-shell">
+        <header class="topbar">
+            <div class="logo">Memory<span>Viz</span></div>
+            <div class="topbar-meta">
+                <span class="pill">Paging • Virtual Memory</span>
+            </div>
+        </header>
+        <main class="main">
+            <!-- Input Panel -->
+            <section class="panel panel-input">
+                <h1>Dynamic Memory Management Visualizer</h1>
+                <p class="subtitle">
+                    Simulate paging with FIFO and LRU page replacement. Enter a reference string and watch frames update with page faults and replacements.
+                </p>
+                <form id="control-form" class="form-grid">
+                    <div class="field">
+                        <label for="pages">Reference string</label>
+                        <input id="pages" type="text" placeholder="Example: 7 0 1 2 0 3 0 4 2 3 0 3 2" required />
+                        <small>Use space or comma separated page numbers or symbols.</small>
+                    </div>
+                    <div class="field">
+                        <label for="frames">Frames</label>
+                        <input id="frames" type="number" min="1" max="10" value="3" />
+                    </div>
+                    <div class="field">
+                        <label for="algorithm">Algorithm</label>
+                        <select id="algorithm">
+                            <option value="FIFO">FIFO (First In First Out)</option>
+                            <option value="LRU">LRU (Least Recently Used)</option>
+                        </select>
+                    </div>
+                    <div class="field field-actions">
+                        <button type="submit" class="btn primary">Run Simulation</button>
+                        <button type="button" class="btn ghost" id="btn-step">Step</button>
+                        <button type="button" class="btn ghost" id="btn-reset">Reset</button>
+                    </div>
+                </form>
+                <!-- Stats Cards -->
+                <div class="stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Algorithm</span>
+                        <span class="stat-value" id="stat-algo">–</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Frames</span>
+                        <span class="stat-value" id="stat-frames">–</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Page faults</span>
+                        <span class="stat-value" id="stat-faults">–</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Current step</span>
+                        <span class="stat-value" id="stat-step">–</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visual Panel -->
+            <section class="panel panel-visual">
+                <div class="visual-header">
+                    <h2>Memory frames</h2>
+                    <span class="legend">
+                        <span class="badge badge-hit">Hit</span>
+                        <span class="badge badge-fault">Fault</span>
+                        <span class="badge badge-replaced">Replaced</span>
+                    </span>
+                </div>
+                <div id="frames-container" class="frames-container">
+                    <!-- populated by JS -->
+                </div>
+
+                <div class="timeline-wrapper">
+                    <h2>Timeline</h2>
+                    <div id="timeline" class="timeline">
+                        <!-- populated by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="footer">
+            <span>Dynamic Memory Management • Paging • FIFO &amp; LRU</span>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
