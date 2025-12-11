@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Dynamic Memory Management Visualizer</title>
+    <title>MemoryViz - Dynamic Memory Management Visualizer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
@@ -11,41 +11,54 @@
     <div class="hero" id="hero-section">
         <div class="hero-content">
             <h1>MemoryViz</h1>
-            <p>Visualize Dynamic Memory Management with FIFO & LRU algorithms</p>
+            <p>Visualize Dynamic Memory Management with Paging, Segmentation & Page Replacement</p>
             <button class="btn primary" id="start-btn">Start Simulation</button>
         </div>
     </div>
 
     <!-- Main App Shell -->
     <div class="app-shell" id="app-shell">
+        <!-- Top Bar -->
         <header class="topbar">
             <div class="logo">Memory<span>Viz</span></div>
             <div class="topbar-meta">
-                <span class="pill">Paging • Virtual Memory</span>
+                <span class="pill">Paging • Virtual Memory • Segmentation</span>
             </div>
         </header>
+
         <main class="main">
             <!-- Input Panel -->
             <section class="panel panel-input">
                 <h1>Dynamic Memory Management Visualizer</h1>
                 <p class="subtitle">
-                    Simulate paging with FIFO and LRU page replacement. Enter a reference string and watch frames update with page faults and replacements.
+                    Enter reference string, frame count, segment sizes, and select page replacement algorithm.
                 </p>
                 <form id="control-form" class="form-grid">
                     <div class="field">
-                        <label for="pages">Reference string</label>
+                        <label for="pages">Reference String</label>
                         <input id="pages" type="text" placeholder="Example: 7 0 1 2 0 3 0 4 2 3 0 3 2" required />
-                        <small>Use space or comma separated page numbers or symbols.</small>
+                        <small>Use space or comma separated page numbers.</small>
                     </div>
                     <div class="field">
-                        <label for="frames">Frames</label>
-                        <input id="frames" type="number" min="1" max="10" value="3" />
+                        <label for="frames">Number of Frames</label>
+                        <input id="frames" type="number" min="1" max="10" value="3" required />
                     </div>
                     <div class="field">
-                        <label for="algorithm">Algorithm</label>
+                        <label>Segment Sizes (Pages per Segment)</label>
+                        <div class="form-grid" style="grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                            <input type="number" id="segment-code" placeholder="Code Pages" value="2" min="1" required />
+                            <input type="number" id="segment-data" placeholder="Data Pages" value="2" min="1" required />
+                            <input type="number" id="segment-stack" placeholder="Stack Pages" value="2" min="1" required />
+                            <input type="number" id="segment-heap" placeholder="Heap Pages" value="2" min="1" required />
+                        </div>
+                        <small>Total pages in segments should not exceed total frames.</small>
+                    </div>
+                    <div class="field">
+                        <label for="algorithm">Page Replacement Algorithm</label>
                         <select id="algorithm">
                             <option value="FIFO">FIFO (First In First Out)</option>
                             <option value="LRU">LRU (Least Recently Used)</option>
+                            <option value="Optimal">Optimal</option>
                         </select>
                     </div>
                     <div class="field field-actions">
@@ -54,6 +67,7 @@
                         <button type="button" class="btn ghost" id="btn-reset">Reset</button>
                     </div>
                 </form>
+
                 <!-- Stats Cards -->
                 <div class="stats">
                     <div class="stat-card">
@@ -65,11 +79,11 @@
                         <span class="stat-value" id="stat-frames">–</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-label">Page faults</span>
+                        <span class="stat-label">Page Faults</span>
                         <span class="stat-value" id="stat-faults">–</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-label">Current step</span>
+                        <span class="stat-label">Current Step</span>
                         <span class="stat-value" id="stat-step">–</span>
                     </div>
                 </div>
@@ -78,27 +92,51 @@
             <!-- Visual Panel -->
             <section class="panel panel-visual">
                 <div class="visual-header">
-                    <h2>Memory frames</h2>
+                    <h2>Memory Frames</h2>
                     <span class="legend">
                         <span class="badge badge-hit">Hit</span>
                         <span class="badge badge-fault">Fault</span>
                         <span class="badge badge-replaced">Replaced</span>
+                        <span class="badge badge-segment">Segment</span>
                     </span>
                 </div>
+
+                <!-- Frames Container -->
                 <div id="frames-container" class="frames-container">
-                    <!-- populated by JS -->
+                    <!-- JS populates frames -->
                 </div>
 
+                <!-- Page Table -->
+                <div class="page-table-wrapper">
+                    <h2>Page Table</h2>
+                    <table id="page-table" class="page-table">
+                        <thead>
+                            <tr>
+                                <th>Segment</th>
+                                <th>Page</th>
+                                <th>Frame</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- JS populates page table -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Timeline -->
                 <div class="timeline-wrapper">
                     <h2>Timeline</h2>
                     <div id="timeline" class="timeline">
-                        <!-- populated by JS -->
+                        <!-- JS populates timeline -->
                     </div>
                 </div>
             </section>
         </main>
+
+        <!-- Footer -->
         <footer class="footer">
-            <span>Dynamic Memory Management • Paging • FIFO &amp; LRU</span>
+            <span>Dynamic Memory Management • Paging • Segments • Virtual Memory</span>
         </footer>
     </div>
 
